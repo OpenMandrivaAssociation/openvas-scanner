@@ -1,21 +1,21 @@
-Summary: 	Server module for OpenVAS
-Name:		openvas-server
-Version:	2.0.3
-Release:	%mkrel 3
+Summary: 	Scanner module for OpenVAS
+Name:		openvas-scanner
+Version:	3.0.0
+Release:	%mkrel 1
 Source:		http://wald.intevation.org/frs/download.php/561/%name-%version.tar.gz
-Source1:	openvas-server.init
-Source2:	openvas-server.logrotate
-Patch0:		openvas-server-2.0.3-fix-str-fmt.patch
+Source1:	openvas-scanner.init
+Source2:	openvas-scanner.logrotate
 Group:		System/Servers
 Url:		http://www.openvas.org
 License:	GPLv2+
 BuildRoot:	%{_tmppath}/%name-%{version}-root
-BuildRequires:	openvas-devel >= 2.0
-BuildRequires:	openvas-libnasl-devel >= 2.0
-Requires:	openvas-plugins
+BuildRequires:	openvas-devel >= 3.0.0
+Obsoletes:	openvas-plugins < 3.0.0
+Obsoletes:	openvas-server < 3.0.0
+Provides:	openvas-server = %{version}-%{release}
 
 %description
-This is the server module for the Open Vulnerability Assessment System
+This is the scanner module for the Open Vulnerability Assessment System
 (OpenVAS).
 
 %package devel
@@ -28,7 +28,6 @@ This is the server module for the Open Vulnerability Assessment System
 
 %prep
 %setup -q -n %name-%version
-%patch0 -p0
 
 %build
 %serverbuild
@@ -40,10 +39,8 @@ This is the server module for the Open Vulnerability Assessment System
 rm -rf $RPM_BUILD_ROOT
 %makeinstall_std
 
-install -D -m644 %SOURCE2 %{buildroot}%{_sysconfdir}/logrotate.d/openvas-server
-install -D -m744 %SOURCE1 %{buildroot}%{_initrddir}/openvas-server
-
-%multiarch_binaries %{buildroot}%{_bindir}/openvasd-config
+install -D -m644 %SOURCE2 %{buildroot}%{_sysconfdir}/logrotate.d/openvas-scanner
+install -D -m744 %SOURCE1 %{buildroot}%{_initrddir}/openvas-scanner
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -54,35 +51,31 @@ if [ ! -f  %{_localstatedir}/lib/openvas/CA/servercert.pem ] ; then
         %{_sbindir}/openvas-mkcert -q > /dev/null 2>&1
 fi
 
-%_post_service openvas-server
+%_post_service openvas-scanner
 
 %preun
-%_preun_service openvas-server
+%_preun_service openvas-scanner
 
 %files
 %defattr(-,root,root)
-%config %{_sysconfdir}/logrotate.d/openvas-server
-%{_initrddir}/openvas-server
+%config %{_sysconfdir}/logrotate.d/openvas-scanner
+%{_initrddir}/openvas-scanner
+%{_libdir}/openvas/plugins
 %{_bindir}/openvas-mkcert-client
 %{_bindir}/openvas-mkrand
 %{_sbindir}/openvas-adduser
 %{_sbindir}/openvas-mkcert
 %{_sbindir}/openvas-rmuser
-%{_sbindir}/openvasd
+%{_sbindir}/openvassd
+%{_sbindir}/openvas-nvt-sync
 %{_mandir}/man1/openvas-mkcert-client.1.*
 %{_mandir}/man1/openvas-mkrand.1.*
 %{_mandir}/man8/openvas-adduser.8.*
 %{_mandir}/man8/openvas-mkcert.8.*
 %{_mandir}/man8/openvas-rmuser.8.*
-%{_mandir}/man8/openvasd.8.*
+%{_mandir}/man8/openvassd.8.*
+%{_mandir}/man8/openvas-nvt-sync.8.*
 %{_localstatedir}/cache/openvas
 %{_localstatedir}/lib/openvas
 %config %dir %{_sysconfdir}/openvas
 %dir %{_localstatedir}/log/openvas
-
-%files devel
-%defattr(-,root,root)
-%{_bindir}/openvasd-config
-%multiarch %{multiarch_bindir}/openvasd-config
-%{_mandir}/man1/openvasd-config.1.*
-%{_includedir}/openvas/*.h
