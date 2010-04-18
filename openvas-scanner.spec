@@ -1,6 +1,6 @@
 Summary: 	Scanner module for OpenVAS
 Name:		openvas-scanner
-Version:	3.0.0
+Version:	3.0.2
 Release:	%mkrel 1
 Source:		http://wald.intevation.org/frs/download.php/561/%name-%version.tar.gz
 Source1:	openvas-scanner.init
@@ -16,14 +16,6 @@ Provides:	openvas-server = %{version}-%{release}
 
 %description
 This is the scanner module for the Open Vulnerability Assessment System
-(OpenVAS).
-
-%package devel
-Summary:        Headers for developing programs that will use openvas-server
-Group:          Development/C
-
-%description devel
-This is the server module for the Open Vulnerability Assessment System
 (OpenVAS).
 
 %prep
@@ -68,6 +60,7 @@ fi
 %{_sbindir}/openvas-rmuser
 %{_sbindir}/openvassd
 %{_sbindir}/openvas-nvt-sync
+%{_sbindir}/greenbone-nvt-sync
 %{_mandir}/man1/openvas-mkcert-client.1.*
 %{_mandir}/man1/openvas-mkrand.1.*
 %{_mandir}/man8/openvas-adduser.8.*
