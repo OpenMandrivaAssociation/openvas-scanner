@@ -1,6 +1,6 @@
 Summary: 	Scanner module for OpenVAS
 Name:		openvas-scanner
-Version:	3.0.2
+Version:	3.1.1
 Release:	%mkrel 1
 Source:		http://wald.intevation.org/frs/download.php/561/%name-%version.tar.gz
 Source1:	openvas-scanner.init
@@ -9,7 +9,7 @@ Group:		System/Servers
 Url:		http://www.openvas.org
 License:	GPLv2+
 BuildRoot:	%{_tmppath}/%name-%{version}-root
-BuildRequires:	openvas-devel >= 3.0.0
+BuildRequires:	openvas-devel >= 3.1.0
 Obsoletes:	openvas-plugins < 3.0.0
 Obsoletes:	openvas-server < 3.0.0
 Provides:	openvas-server = %{version}-%{release}
