@@ -54,7 +54,6 @@ fi
 %{_initrddir}/openvas-scanner
 %{_libdir}/openvas/plugins
 %{_bindir}/openvas-mkcert-client
-%{_bindir}/openvas-mkrand
 %{_sbindir}/openvas-adduser
 %{_sbindir}/openvas-mkcert
 %{_sbindir}/openvas-rmuser
@@ -62,7 +61,6 @@ fi
 %{_sbindir}/openvas-nvt-sync
 %{_sbindir}/greenbone-nvt-sync
 %{_mandir}/man1/openvas-mkcert-client.1.*
-%{_mandir}/man1/openvas-mkrand.1.*
 %{_mandir}/man8/openvas-adduser.8.*
 %{_mandir}/man8/openvas-mkcert.8.*
 %{_mandir}/man8/openvas-rmuser.8.*
