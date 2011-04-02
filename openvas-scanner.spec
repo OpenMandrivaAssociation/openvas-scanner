@@ -24,6 +24,8 @@ This is the scanner module for the Open Vulnerability Assessment System
 %setup -q -n %name-%version
 %patch0 -p0 -b .install
 
+sed -i -e 's#-Werror##' `grep -rl Werror *|grep CMakeLists.txt`
+
 %build
 %serverbuild
 %cmake -DLOCALSTATEDIR=%{_var}
