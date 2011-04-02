@@ -1,15 +1,17 @@
 Summary: 	Scanner module for OpenVAS
 Name:		openvas-scanner
-Version:	3.1.1
+Version:	3.2.2
 Release:	%mkrel 1
 Source:		http://wald.intevation.org/frs/download.php/561/%name-%version.tar.gz
 Source1:	openvas-scanner.init
 Source2:	openvas-scanner.logrotate
+Patch0:		openvas-scanner-3.2.2-install.patch
 Group:		System/Servers
 Url:		http://www.openvas.org
 License:	GPLv2+
 BuildRoot:	%{_tmppath}/%name-%{version}-root
-BuildRequires:	openvas-devel >= 3.1.0
+BuildRequires:	openvas-devel >= 4.0
+BuildRequires:	cmake
 Obsoletes:	openvas-plugins < 3.0.0
 Obsoletes:	openvas-server < 3.0.0
 Provides:	openvas-server = %{version}-%{release}
@@ -20,16 +22,16 @@ This is the scanner module for the Open Vulnerability Assessment System
 
 %prep
 %setup -q -n %name-%version
+%patch0 -p0 -b .install
 
 %build
 %serverbuild
-%configure2_5x --disable-static \
-	--sharedstatedir=%{_localstatedir}/lib --enable-syslog
+%cmake -DLOCALSTATEDIR=%{_var}
 %make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%makeinstall_std
+%makeinstall_std -C build
 
 install -D -m644 %SOURCE2 %{buildroot}%{_sysconfdir}/logrotate.d/openvas-scanner
 install -D -m744 %SOURCE1 %{buildroot}%{_initrddir}/openvas-scanner
@@ -52,21 +54,19 @@ fi
 %defattr(-,root,root)
 %config %{_sysconfdir}/logrotate.d/openvas-scanner
 %{_initrddir}/openvas-scanner
-%{_libdir}/openvas/plugins
-%{_bindir}/openvas-mkcert-client
 %{_sbindir}/openvas-adduser
 %{_sbindir}/openvas-mkcert
 %{_sbindir}/openvas-rmuser
 %{_sbindir}/openvassd
 %{_sbindir}/openvas-nvt-sync
 %{_sbindir}/greenbone-nvt-sync
-%{_mandir}/man1/openvas-mkcert-client.1.*
+%{_sbindir}/openvas-mkcert-client
 %{_mandir}/man8/openvas-adduser.8.*
 %{_mandir}/man8/openvas-mkcert.8.*
 %{_mandir}/man8/openvas-rmuser.8.*
 %{_mandir}/man8/openvassd.8.*
 %{_mandir}/man8/openvas-nvt-sync.8.*
-%{_localstatedir}/cache/openvas
-%{_localstatedir}/lib/openvas
-%config %dir %{_sysconfdir}/openvas
-%dir %{_localstatedir}/log/openvas
+%{_mandir}/man8/greenbone-nvt-sync.8*
+%dir %{_var}/lib/openvas
+%dir %{_var}/lib/openvas/plugins
+%dir %{_var}/cache/openvas
