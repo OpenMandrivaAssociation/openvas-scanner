@@ -1,6 +1,6 @@
 Summary: 	Scanner module for OpenVAS
 Name:		openvas-scanner
-Version:	3.2.3
+Version:	3.2.4
 Release:	%mkrel 1
 Source:		http://wald.intevation.org/frs/download.php/561/%name-%version.tar.gz
 Source1:	openvas-scanner.initd
@@ -44,7 +44,7 @@ This is the scanner module for the Open Vulnerability Assessment System
 %patch0 -p0 -b .install
 %patch1 -p 1 -b .pkipath
 %patch3 -p 1 -b .rules
-%patch4 -p 1 -b .notused
+#patch4 -p 1 -b .notused
 
 sed -i -e 's#-Werror##' `grep -rl Werror *|grep CMakeLists.txt`
 
