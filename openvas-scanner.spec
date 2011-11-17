@@ -1,7 +1,10 @@
 Summary: 	Scanner module for OpenVAS
 Name:		openvas-scanner
-Version:	3.2.4
+Version:	3.2.5
 Release:	%mkrel 1
+License:	GPLv2+
+Group:		System/Servers
+URL:		http://www.openvas.org
 Source:		http://wald.intevation.org/frs/download.php/561/%name-%version.tar.gz
 Source1:	openvas-scanner.initd
 Source2:	openvassd.conf
@@ -13,27 +16,21 @@ Patch0:		openvas-scanner-3.2.2-install.patch
 #Put certs to /etc/pki as suggested by http://fedoraproject.org/wiki/PackagingDrafts/Certificates
 #Not reported upstream as it is RedHat/Fedora specific
 Patch1:		openvas-scanner-pki.patch
-
 #Put openvas-mkcert-client to bin directory instead of sbin and install its man page
 #Reported upstream http://wald.intevation.org/tracker/?func=detail&aid=1941&group_id=29&atid=220
 Patch2:		openvas-scanner-mkcertclient.patch
-
 #Allow compile time definition of the directory to store openvassd.rules
 #Reported upstream http://wald.intevation.org/tracker/?func=detail&aid=1940&group_id=29&atid=220
 Patch3:		openvas-scanner-rulesdir.patch
-
 #Fix compile time errors for F15 where variables set but not used are reported as error
 #Reported upstream http://wald.intevation.org/tracker/?func=detail&aid=1942&group_id=29&atid=220
 Patch4:		openvas-scanner-notused.patch
-Group:		System/Servers
-Url:		http://www.openvas.org
-License:	GPLv2+
-BuildRoot:	%{_tmppath}/%name-%{version}-root
 BuildRequires:	openvas-devel >= 4.0
 BuildRequires:	cmake
 Obsoletes:	openvas-plugins < 3.0.0
 Obsoletes:	openvas-server < 3.0.0
 Requires:	rsync wget curl
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 This is the scanner module for the Open Vulnerability Assessment System
@@ -54,7 +51,8 @@ sed -i -e 's#-Werror##' `grep -rl Werror *|grep CMakeLists.txt`
 %make
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
+
 %makeinstall_std -C build
 
 #Config directory
@@ -94,9 +92,6 @@ install -Dp -m 755 %{SOURCE5} %{buildroot}/%{_sbindir}/
 # Install cront jobs to periodically update plugins
 install -Dp -m 644 %{SOURCE6} %{buildroot}/%{_sysconfdir}/cron.d/openvas-sync-plugins
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %post
 # Generate cert
 if [ ! -f  %{_localstatedir}/lib/openvas/CA/servercert.pem ] ; then
@@ -107,6 +102,9 @@ fi
 
 %preun
 %_preun_service openvas-scanner
+
+%clean
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
