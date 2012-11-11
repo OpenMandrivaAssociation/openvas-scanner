@@ -1,0 +1,57 @@
+Put the certificates to the /etc/pki as suggested by:
+http://fedoraproject.org/wiki/PackagingDrafts/Certificates
+Nessus2 package in Fedora is using the same.
+diff -ru openvas-scanner-3.2.2/CMakeLists.txt openvas-scanner-3.2.2.new/CMakeLists.txt
+--- openvas-scanner-3.2.2/CMakeLists.txt	2011-02-21 10:40:34.000000000 +0100
++++ openvas-scanner-3.2.2.new/CMakeLists.txt	2011-03-18 23:07:04.000000000 +0100
+@@ -152,16 +152,17 @@
+ set (OPENVAS_CACHE_DIR   "${LOCALSTATEDIR}/cache/openvas")
+ set (OPENVAS_PID_DIR     "${LOCALSTATEDIR}/run")
+ set (OPENVAS_SYSCONF_DIR "${SYSCONFDIR}/openvas")
++set (OPENVAS_CERT_DIR    "${SYSCONFDIR}/pki/openvas")
+ 
+ set (OPENVAS_USERS_DIR   "${OPENVAS_STATE_DIR}/users")
+ set (OPENVAS_NVT_DIR     "${OPENVAS_STATE_DIR}/plugins")
+ 
+ set (OPENVAS_LIB_INSTALL_DIR     "${LIBDIR}")
+-set (OPENVAS_SCANNER_CERTIFICATE "${OPENVAS_STATE_DIR}/CA/servercert.pem")
+-set (OPENVAS_SCANNER_KEY         "${OPENVAS_STATE_DIR}/private/CA/serverkey.pem")
+-set (OPENVAS_CLIENT_CERTIFICATE  "${OPENVAS_STATE_DIR}/CA/clientcert.pem")
+-set (OPENVAS_CLIENT_KEY          "${OPENVAS_STATE_DIR}/private/CA/clientkey.pem")
+-set (OPENVAS_CA_CERTIFICATE      "${OPENVAS_STATE_DIR}/CA/cacert.pem")
++set (OPENVAS_SCANNER_CERTIFICATE "${OPENVAS_CERT_DIR}/CA/servercert.pem")
++set (OPENVAS_SCANNER_KEY         "${OPENVAS_CERT_DIR}/private/CA/serverkey.pem")
++set (OPENVAS_CLIENT_CERTIFICATE  "${OPENVAS_CERT_DIR}/CA/clientcert.pem")
++set (OPENVAS_CLIENT_KEY          "${OPENVAS_CERT_DIR}/private/CA/clientkey.pem")
++set (OPENVAS_CA_CERTIFICATE      "${OPENVAS_CERT_DIR}/CA/cacert.pem")
+ 
+ set (OPENVASSD_MESSAGES "${OPENVAS_LOG_DIR}/openvassd.messages")
+ set (OPENVASSD_DEBUGMSG "${OPENVAS_LOG_DIR}/openvassd.dump")
+diff -ru openvas-scanner-3.2.2/tools/openvas-mkcert-client.in openvas-scanner-3.2.2.new/tools/openvas-mkcert-client.in
+--- openvas-scanner-3.2.2/tools/openvas-mkcert-client.in	2011-02-21 10:40:34.000000000 +0100
++++ openvas-scanner-3.2.2.new/tools/openvas-mkcert-client.in	2011-03-18 23:09:22.000000000 +0100
+@@ -26,8 +26,8 @@
+ 
+ umask 022
+ 
+-OPENVASPRIV="@OPENVAS_STATE_DIR@/private/CA"
+-OPENVASPUB="@OPENVAS_STATE_DIR@/CA"
++OPENVASPRIV="@OPENVAS_CERT_DIR@/private/CA"
++OPENVASPUB="@OPENVAS_CERT_DIR@/CA"
+ 
+ usage()
+ {
+diff -ru openvas-scanner-3.2.2/tools/openvas-mkcert.in openvas-scanner-3.2.2.new/tools/openvas-mkcert.in
+--- openvas-scanner-3.2.2/tools/openvas-mkcert.in	2011-02-21 10:40:34.000000000 +0100
++++ openvas-scanner-3.2.2.new/tools/openvas-mkcert.in	2011-03-18 23:11:40.000000000 +0100
+@@ -44,8 +44,8 @@
+ datadir=@DATADIR@
+ bindir=@BINDIR@
+ sbindir=@SBINDIR@
+-OPENVASPRIV="@OPENVAS_STATE_DIR@/private/CA"
+-OPENVASPUB="@OPENVAS_STATE_DIR@/CA"
++OPENVASPRIV="@OPENVAS_CERT_DIR@/private/CA"
++OPENVASPUB="@OPENVAS_CERT_DIR@/CA"
+ 
+ BASEDIR=${TMPDIR-/tmp}/openvas-mkcert.$$
+ 

@@ -1,0 +1,158 @@
+New version of gcc used for fedora 15 is reporting errors with -Werror also for
+variables set, but never used.
+Where it was obvious I fixed the code. In other cases avoid this error by:
+(void)variable;
+diff -ru openvas-scanner-3.2.2/src/attack.c openvas-scanner-3.2.2.new/src/attack.c
+--- openvas-scanner-3.2.2/src/attack.c	2011-02-21 10:40:34.000000000 +0100
++++ openvas-scanner-3.2.2.new/src/attack.c	2011-03-26 13:00:43.000000000 +0100
+@@ -939,7 +939,9 @@
+ {
+   int max_hosts = 0;
+   int num_tested = 0;
++  /* variable set but not used
+   int host_pending = 0;
++  */
+   char hostname[1024];
+   char *hostlist;
+   struct in6_addr host_ip;
+@@ -1139,7 +1141,9 @@
+             }
+         }
+ 
++      /* variable set but not used
+       host_pending = 0;
++      */
+       memcpy (&addrs.ip6, &host_ip, sizeof (struct in6_addr));
+ 
+       /* Do we have the right to test this host ? */
+@@ -1156,9 +1160,11 @@
+           int s;
+           char *MAC = NULL;
+           int mac_err = -1;
++	  /*variable set but not used
+           struct in_addr addr;
+ 
+           addr.s_addr = host_ip.s6_addr32[3];
++	  */
+           if (preferences_use_mac_addr (preferences)
+               && v6_is_local_ip (&host_ip))
+             {
+diff -ru openvas-scanner-3.2.2/src/nasl_plugins.c openvas-scanner-3.2.2.new/src/nasl_plugins.c
+--- openvas-scanner-3.2.2/src/nasl_plugins.c	2011-02-21 10:40:34.000000000 +0100
++++ openvas-scanner-3.2.2.new/src/nasl_plugins.c	2011-03-26 13:05:19.000000000 +0100
+@@ -253,6 +253,10 @@
+ 
+   if (preferences_benice (NULL))
+     nice_retval = nice (-5);
++  
++  /* avoid compilation error as variable nice_retval is set but not used now */
++  (void)nice_retval;
++
+   // @todo: Check value of nice_retval to see if it was successful.
+   // Keep in mind that even -1 can mean success here; see man page of nice
+   // for details.
+diff -ru openvas-scanner-3.2.2/src/ntp_11.c openvas-scanner-3.2.2.new/src/ntp_11.c
+--- openvas-scanner-3.2.2/src/ntp_11.c	2011-02-21 10:40:34.000000000 +0100
++++ openvas-scanner-3.2.2.new/src/ntp_11.c	2011-03-26 13:12:06.000000000 +0100
+@@ -812,11 +812,11 @@
+   while (plugins->next)
+     {
+       struct arglist *args = plugins->value;
+-      struct arglist *d, *deps;
++      struct arglist *deps;
+       if (!args)
+         goto nxt;
+ 
+-      d = deps = plug_get_deps (args);
++      deps = plug_get_deps (args);
+       if (deps == NULL)
+         goto nxt;
+ 
+diff -ru openvas-scanner-3.2.2/src/openvassd.c openvas-scanner-3.2.2.new/src/openvassd.c
+--- openvas-scanner-3.2.2/src/openvassd.c	2011-02-21 10:40:34.000000000 +0100
++++ openvas-scanner-3.2.2.new/src/openvassd.c	2011-03-26 13:13:56.000000000 +0100
+@@ -429,6 +429,10 @@
+   /* Everyone runs with a nicelevel of 10 */
+   if (preferences_benice (prefs))
+     nice_retval = nice (10);
++
++  /* avoid compilation error as variable nice_retval is set but not used */
++  (void) nice_retval;
++
+   // @todo: Check value of nice_retval to see if it was successful.
+   // Keep in mind that even -1 can mean success here; see man page of nice
+   // for details.
+diff -ru openvas-scanner-3.2.2/src/oval_plugins.c openvas-scanner-3.2.2.new/src/oval_plugins.c
+--- openvas-scanner-3.2.2/src/oval_plugins.c	2011-02-21 10:40:34.000000000 +0100
++++ openvas-scanner-3.2.2.new/src/oval_plugins.c	2011-03-26 13:18:28.000000000 +0100
+@@ -442,6 +442,9 @@
+                 ("This OVAL file contains the following definitions:\n",
+                  g_strndup (descriptions, 3100),
+                  "\n(list cut due to memory limitations)", NULL);
++
++		/* avoid compilation error as variable description is set but never used */
++		(void) description;
+             }
+           else
+             {
+diff -ru openvas-scanner-3.2.2/src/preferences.c openvas-scanner-3.2.2.new/src/preferences.c
+--- openvas-scanner-3.2.2/src/preferences.c	2011-02-21 10:40:34.000000000 +0100
++++ openvas-scanner-3.2.2.new/src/preferences.c	2011-03-26 21:31:23.000000000 +0100
+@@ -452,7 +452,10 @@
+ int
+ preferences_drop_privileges (struct arglist *preferences, char *oid)
+ {
++  /* variable set but never used
+   char *pref;
++  */
++
+   int ret = 0;
+ 
+   if (preferences == NULL)
+@@ -464,7 +467,9 @@
+         ret = 1;
+     }
+ 
++  /* variable set but never used
+   pref = arg_get_value (preferences, "drop_privileges");
++  */
+   return ret;
+ }
+ 
+diff -ru openvas-scanner-3.2.2/src/shared_socket.c openvas-scanner-3.2.2.new/src/shared_socket.c
+--- openvas-scanner-3.2.2/src/shared_socket.c	2011-02-21 10:40:34.000000000 +0100
++++ openvas-scanner-3.2.2.new/src/shared_socket.c	2011-03-26 21:35:51.000000000 +0100
+@@ -96,10 +96,15 @@
+ 
+   char *buffer = NULL;
+   int bufsz = 0;
++  /* variable set but never used
+   int e;
++  */
+   int type;
+ 
++  /* variable set but never used
+   e = internal_recv (soc, &buffer, &bufsz, &type);
++  */
++  internal_recv (soc, &buffer, &bufsz, &type);
+   if ((type & INTERNAL_COMM_MSG_SHARED_SOCKET) == 0
+       || (type & INTERNAL_COMM_SHARED_SOCKET_DORECVMSG) == 0)
+     {
+diff -ru openvas-scanner-3.2.2/src/sighand.c openvas-scanner-3.2.2.new/src/sighand.c
+--- openvas-scanner-3.2.2/src/sighand.c	2011-02-21 10:40:34.000000000 +0100
++++ openvas-scanner-3.2.2.new/src/sighand.c	2011-03-26 21:39:53.000000000 +0100
+@@ -46,9 +46,14 @@
+ void
+ let_em_die (int pid)
+ {
++  /* variable x set but never used
+   int status, x;
+ 
+   x = waitpid (pid, &status, WNOHANG);
++  */
++
++  int status;
++  waitpid (pid, &status, WNOHANG);
+ }
+ 
+ 

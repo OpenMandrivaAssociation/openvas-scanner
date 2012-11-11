@@ -1,0 +1,29 @@
+Put openvas-mkcert-client to bin directory instead of sbin.
+Also install its man page.
+http://wald.intevation.org/tracker/?func=detail&aid=1941&group_id=29&atid=220
+diff -ru openvas-scanner-3.2.2/CMakeLists.txt openvas-scanner-3.2.2.new/CMakeLists.txt
+--- openvas-scanner-3.2.2/CMakeLists.txt	2011-03-19 00:05:05.000000000 +0100
++++ openvas-scanner-3.2.2.new/CMakeLists.txt	2011-03-19 00:23:23.000000000 +0100
+@@ -257,13 +257,21 @@
+ #install (FILES openvassd_log.conf
+ #         DESTINATION ${OPENVAS_SYSCONF_DIR})
+ 
++install (FILES tools/openvas-mkcert-client
++         DESTINATION ${BINDIR}
++         PERMISSIONS OWNER_EXECUTE OWNER_READ OWNER_WRITE
++                     GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
++
+ install (FILES tools/openvas-adduser tools/openvas-rmuser
+-               tools/openvas-mkcert tools/openvas-mkcert-client
++               tools/openvas-mkcert
+                tools/greenbone-nvt-sync tools/openvas-nvt-sync
+          DESTINATION ${SBINDIR}
+          PERMISSIONS OWNER_EXECUTE OWNER_READ OWNER_WRITE
+                      GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+ 
++install (FILES doc/openvas-mkcert-client.1
++         DESTINATION ${DATADIR}/man/man1 )
++
+ install (FILES doc/openvas-adduser.8 doc/openvas-mkcert.8
+                doc/openvas-nvt-sync.8 doc/openvas-rmuser.8 doc/openvassd.8
+                doc/greenbone-nvt-sync.8

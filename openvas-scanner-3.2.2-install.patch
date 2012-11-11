@@ -1,0 +1,24 @@
+--- CMakeLists.txt.build	2011-04-02 11:35:37.000000000 +0200
++++ CMakeLists.txt	2011-04-02 11:37:15.000000000 +0200
+@@ -247,7 +247,7 @@
+ 
+ ## Install
+ 
+-install (FILES src/openvassd
++install (FILES ${CMAKE_CURRENT_BINARY_DIR}/src/openvassd
+   DESTINATION ${SBINDIR}
+   PERMISSIONS OWNER_EXECUTE OWNER_READ OWNER_WRITE
+   GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+@@ -256,9 +256,9 @@
+ #install (FILES openvassd_log.conf
+ #         DESTINATION ${OPENVAS_SYSCONF_DIR})
+ 
+-install (FILES tools/openvas-adduser tools/openvas-rmuser
+-               tools/openvas-mkcert tools/openvas-mkcert-client
+-               tools/greenbone-nvt-sync tools/openvas-nvt-sync
++install (FILES ${CMAKE_CURRENT_BINARY_DIR}/tools/openvas-adduser ${CMAKE_CURRENT_BINARY_DIR}/tools/openvas-rmuser
++               ${CMAKE_CURRENT_BINARY_DIR}/tools/openvas-mkcert ${CMAKE_CURRENT_BINARY_DIR}/tools/openvas-mkcert-client
++               ${CMAKE_CURRENT_SOURCE_DIR}/tools/greenbone-nvt-sync ${CMAKE_CURRENT_BINARY_DIR}/tools/openvas-nvt-sync
+          DESTINATION ${SBINDIR}
+          PERMISSIONS OWNER_EXECUTE OWNER_READ OWNER_WRITE
+                      GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)

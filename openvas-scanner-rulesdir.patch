@@ -1,0 +1,16 @@
+Allow compile time definition of the directory to store openvassd.rules
+diff -ru openvas-scanner-3.2.2/CMakeLists.txt openvas-scanner-3.2.2.new/CMakeLists.txt
+--- openvas-scanner-3.2.2/CMakeLists.txt	2011-03-19 18:42:55.000000000 +0100
++++ openvas-scanner-3.2.2.new/CMakeLists.txt	2011-03-19 18:42:09.000000000 +0100
+@@ -167,7 +167,10 @@
+ set (OPENVASSD_MESSAGES "${OPENVAS_LOG_DIR}/openvassd.messages")
+ set (OPENVASSD_DEBUGMSG "${OPENVAS_LOG_DIR}/openvassd.dump")
+ set (OPENVASSD_CONF     "${OPENVAS_SYSCONF_DIR}/openvassd.conf")
+-set (OPENVASSD_RULES    "${OPENVAS_DATA_DIR}/openvassd.rules")
++
++if (NOT OPENVASSD_RULES)
++  set (OPENVASSD_RULES    "${OPENVAS_DATA_DIR}/openvassd.rules")
++endif (NOT OPENVASSD_RULES)
+ 
+ set (NVT_TIMEOUT "320")
+ 
