@@ -1,8 +1,3 @@
 sources:
-  "openvas-nvt-sync-cron:"	64e97623e446b2ad75bfa49c7e6931ea2a9cabda
-  "openvas-nvt-sync-cronjob:"	56a2a4531b70774dab90f5f2a7f7f83b6a21f44d
-  "openvas-scanner-3.2.5.tar.gz:"	b6ed62b523c9b97c39b262d245f2802f64e08952
-  "openvas-scanner.initd:"	c62bc91e525a5a93ed17b1d18b92ee6cd3a71c29
-  "openvas-scanner.logrotate:"	833bfb8c7b59dfe05129c450a271964a607ca581
-  "openvas-scanner.sysconfig:"	c1b6069d5b148409ec454d85c752612f544edbea
-  "openvassd.conf:"	be6d8a8396a5206cfcc311dd020343bb0734de80
+  openvas-scanner-3.2.5.tar.gz: b6ed62b523c9b97c39b262d245f2802f64e08952
+---

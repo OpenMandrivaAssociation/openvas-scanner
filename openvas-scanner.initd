@@ -1,0 +1,126 @@
+#!/bin/bash
+
+# This is an implementation of a start-script for OpenVAS Scanner.
+
+# Make RedHat happy:
+#
+# chkconfig: - 91 9
+# Description: OpenVAS is a vulnerability Scanner
+#
+
+### BEGIN INIT INFO
+# Provides: openvas-scanner
+# Required-Start: $local_fs $network $syslog
+# Required-Stop: $local_fs $network $syslog
+# Default-Start:
+# Default-Stop: 0 1 2 3 4 5 6
+# Short-Description: start|stop|status|restart|condrestart|reloadplugins OpenVAS Scanner
+# Description: control OpenVAS Scanner
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+exec="/usr/sbin/openvassd"
+prog="openvassd"
+progname="openvas-scanner"
+config=/etc/openvas/openvassd.conf
+lockfile=/var/lock/subsys/openvas-scanner
+
+[ -e /etc/sysconfig/$progname ] && . /etc/sysconfig/$progname
+
+
+rh_status() {
+	# run checks to determine if the service is running or use generic status
+	status -p /var/run/$prog.pid $progname
+}
+
+rh_status_q() {
+	rh_status >/dev/null 2>&1
+}
+
+start() {
+
+	# Build parameters
+	[ -n "$SCANNER_LISTEN" ] && PARAMS="$PARAMS --listen=$SCANNER_LISTEN"
+	[ -n "$SCANNER_PORT" ]    && PARAMS="$PARAMS --port=$SCANNER_PORT"
+	[ -n "$SCANNER_SRCIP" ]   && PARAMS="$PARAMS --src-ip=$SCANNER_SRCIP"
+
+	grep -q ca_file $config >& /dev/null
+	if [ $? -ne 0 ]; then
+		echo "No certificate specified in configuration file. Did you run openvas-mkcert tool?"
+		exit 6
+	fi
+
+	CACERT=`grep ca_file $config | cut -d= -f2`
+	if [ \! -z "$CACERT" -a \! -f "$CACERT" ]; then
+		echo "Certificate specified in the configuration file not found. Did you run openvas-mkcert tool?"
+		exit 6
+	fi
+
+	echo "Starting $progname:"
+	daemon --pidfile=/var/run/$prog.pid $prog -q $PARAMS
+	RETVAL=$?
+	echo
+	[ $RETVAL -eq 0 ] && touch $lockfile
+	return $RETVAL
+}
+
+stop() {
+	echo -n "Stopping $progname: "
+	killproc $prog
+	RETVAL=$?
+	echo
+	[ $RETVAL -eq 0 ] && rm -f $lockfile
+	return $RETVAL
+}
+
+restart() {
+	stop
+	start
+}
+
+reloadplugins() {
+	echo -n "Reloading OpenVAS plugins: "
+	killproc $prog -HUP
+	echo
+}
+
+case "$1" in
+	start)
+		rh_status_q && exit 0
+		$1
+		;;
+
+	stop)
+		rh_status_q || exit 0
+		$1
+                ;;
+
+	restart)
+		$1
+		;;
+
+	condrestart|try-restart)
+		rh_status_q || exit 0
+		$1
+		;;
+
+	reload)
+		;;
+
+	reloadplugins)
+		rh_status_q || exit 0
+		$1
+		;;
+
+	status)
+		status -p /var/run/$prog.pid $progname
+                ;;
+
+	*)
+		echo "Usage: $0 {start|stop|status|restart|condrestart|reload|reloadplugins}"
+		exit 1
+esac
+
+exit 0

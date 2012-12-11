@@ -1,36 +1,39 @@
 Summary: 	Scanner module for OpenVAS
 Name:		openvas-scanner
 Version:	3.2.5
-Release:	%mkrel 1
-License:	GPLv2+
-Group:		System/Servers
-URL:		http://www.openvas.org
-Source:		http://wald.intevation.org/frs/download.php/561/%name-%version.tar.gz
+Release:	1
+Source0:		http://wald.intevation.org/frs/download.php/561/%name-%version.tar.gz
 Source1:	openvas-scanner.initd
 Source2:	openvassd.conf
 Source3:	openvas-scanner.logrotate
 Source4:	openvas-scanner.sysconfig
 Source5:	openvas-nvt-sync-cron
 Source6:	openvas-nvt-sync-cronjob
+source7:	.abf.yml
 Patch0:		openvas-scanner-3.2.2-install.patch
 #Put certs to /etc/pki as suggested by http://fedoraproject.org/wiki/PackagingDrafts/Certificates
 #Not reported upstream as it is RedHat/Fedora specific
 Patch1:		openvas-scanner-pki.patch
+
 #Put openvas-mkcert-client to bin directory instead of sbin and install its man page
 #Reported upstream http://wald.intevation.org/tracker/?func=detail&aid=1941&group_id=29&atid=220
 Patch2:		openvas-scanner-mkcertclient.patch
+
 #Allow compile time definition of the directory to store openvassd.rules
 #Reported upstream http://wald.intevation.org/tracker/?func=detail&aid=1940&group_id=29&atid=220
 Patch3:		openvas-scanner-rulesdir.patch
+
 #Fix compile time errors for F15 where variables set but not used are reported as error
 #Reported upstream http://wald.intevation.org/tracker/?func=detail&aid=1942&group_id=29&atid=220
 Patch4:		openvas-scanner-notused.patch
+Group:		System/Servers
+Url:		http://www.openvas.org
+License:	GPLv2+
 BuildRequires:	openvas-devel >= 4.0
 BuildRequires:	cmake
 Obsoletes:	openvas-plugins < 3.0.0
 Obsoletes:	openvas-server < 3.0.0
 Requires:	rsync wget curl
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 This is the scanner module for the Open Vulnerability Assessment System
@@ -46,13 +49,12 @@ This is the scanner module for the Open Vulnerability Assessment System
 sed -i -e 's#-Werror##' `grep -rl Werror *|grep CMakeLists.txt`
 
 %build
+export LDFLAGS="-lopenvas_base -lopenvas_misc -lopenvas_hg -lglib-2.0"
 %serverbuild
 %cmake -DLOCALSTATEDIR=%{_var}
 %make
 
 %install
-rm -rf %{buildroot}
-
 %makeinstall_std -C build
 
 #Config directory
@@ -103,9 +105,6 @@ fi
 %preun
 %_preun_service openvas-scanner
 
-%clean
-rm -rf %{buildroot}
-
 %files
 %defattr(-,root,root)
 %config(noreplace) %{_sysconfdir}/openvas/openvassd.conf
@@ -135,3 +134,56 @@ rm -rf %{buildroot}
 %dir %{_var}/lib/openvas
 %dir %{_var}/lib/openvas/plugins
 %dir %{_var}/cache/openvas
+
+
+%changelog
+* Thu Sep 08 2011 Luis Daniel Lucio Quiroz <dlucio@mandriva.org> 3.2.4-1mdv2011.0
++ Revision: 698895
+- 3.2.4
+  P4 merged upstream
+
+* Sun May 22 2011 Guillaume Rousse <guillomovitch@mandriva.org> 3.2.3-1
++ Revision: 677435
+- new version
+
+* Sat Apr 02 2011 Funda Wang <fwang@mandriva.org> 3.2.2-2
++ Revision: 649837
+- sync with fedora
+
+* Sat Apr 02 2011 Funda Wang <fwang@mandriva.org> 3.2.2-1
++ Revision: 649799
+- disable Werror
+- new version 3.2.2
+
+* Sun Nov 28 2010 Funda Wang <fwang@mandriva.org> 3.1.1-1mdv2011.0
++ Revision: 602199
+- update file list
+- new version 3.1.1
+
+* Sun Apr 18 2010 Funda Wang <fwang@mandriva.org> 3.0.2-1mdv2010.1
++ Revision: 536369
+- New version 3.0.2
+
+* Sun Dec 20 2009 Funda Wang <fwang@mandriva.org> 3.0.0-1mdv2010.1
++ Revision: 480341
+- New version 3.0.0
+- rename package
+
+* Sat Nov 14 2009 Funda Wang <fwang@mandriva.org> 2.0.3-3mdv2010.1
++ Revision: 465966
+- requires openvas-plugins
+
+* Fri Oct 02 2009 Funda Wang <fwang@mandriva.org> 2.0.3-2mdv2010.0
++ Revision: 452492
+- add initscript
+
+* Thu Oct 01 2009 Funda Wang <fwang@mandriva.org> 2.0.3-1mdv2010.0
++ Revision: 451974
+- fix str fmt
+- New version 2.0.3
+
+* Sat May 02 2009 Funda Wang <fwang@mandriva.org> 2.0.1-1mdv2010.0
++ Revision: 370448
+- import openvas-server
+
+
