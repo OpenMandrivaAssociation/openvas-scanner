@@ -1,7 +1,7 @@
 Summary: 	Scanner module for OpenVAS
 Name:		openvas-scanner
 Version:	3.2.5
-Release:	1
+Release:	2
 Source0:		http://wald.intevation.org/frs/download.php/561/%name-%version.tar.gz
 Source1:	openvas-scanner.initd
 Source2:	openvassd.conf
