@@ -27,7 +27,7 @@ Patch3:		openvas-scanner-rulesdir.patch
 #Reported upstream http://wald.intevation.org/tracker/?func=detail&aid=1942&group_id=29&atid=220
 Patch4:		openvas-scanner-notused.patch
 Group:		System/Servers
-Url:		http://www.openvas.org
+Url:		https://www.openvas.org
 License:	GPLv2+
 BuildRequires:	openvas-devel >= 4.0
 BuildRequires:	cmake
